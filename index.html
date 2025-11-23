@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Happy Birthday</title>
 <style>
 :root {
@@ -15,21 +16,28 @@
     --heart-color: rgb(252, 8, 231);
 }
 
-body {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+body {
     background: var(--bg-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    padding: 20px;
+    touch-action: manipulation;
 }
 
 .container {
     display: grid;
     place-items: center;
+    width: 100%;
+    max-width: 400px;
 }
 
 .envelope-wrapper {
@@ -38,12 +46,15 @@ body {
     padding: 20px;
     position: relative;
     border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .envelope {
     position: relative;
-    width: 300px;
-    height: 230px;
+    width: 100%;
+    height: 200px;
     background: var(--envelope-cover);
     margin: auto;
     overflow: visible;
@@ -54,10 +65,12 @@ body {
     content: '';
     position: absolute;
     z-index: 3;
-    border-left: 150px solid transparent;
-    border-top: 150px solid var(--envelope-tab);
-    border-right: 150px solid transparent;
+    border-left: 50% solid transparent;
+    border-top: 120px solid var(--envelope-tab);
+    border-right: 50% solid transparent;
     top: 0;
+    left: 0;
+    right: 0;
     transform-origin: top;
     transition: all 0.5s ease-in-out 0.7s;
 }
@@ -66,39 +79,53 @@ body {
     content: '';
     position: absolute;
     z-index: 2;
-    border-top: 130px solid transparent;
-    border-left: 150px solid var(--envelope-cover);
-    border-right: 150px solid var(--envelope-cover);
+    border-top: 100px solid transparent;
+    border-left: 50% solid var(--envelope-cover);
+    border-right: 50% solid var(--envelope-cover);
     border-bottom: 100px solid var(--envelope-cover);
     bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .letter {
     position: absolute;
-    left: 10%;
+    left: 5%;
     bottom: 10px;
-    width: 80%;
-    height: 180px;
+    width: 90%;
+    height: 150px;
     background: var(--primary);
     transition: all 1s ease-in-out;
     padding: 15px;
-    box-shadow: 0 0 5px var(--shadow-color);
+    box-shadow: 0 0 10px var(--shadow-color);
     border-radius: 4px;
     z-index: 1;
+    overflow-y: auto;
 }
 
-.letter > .text {
-    font-size: 12px;
+.letter-content {
+    font-size: 14px;
     color: var(--txt-color);
     text-align: left;
     line-height: 1.4;
     margin: 0;
 }
 
-.letter > .text strong {
+.letter-content strong {
     display: block;
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.birthday-image {
+    display: block;
+    margin: 8px auto;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid var(--heart-color);
 }
 
 .heart {
@@ -135,86 +162,204 @@ body {
     left: -10px;
 }
 
-/* Closed state - letter is inside envelope */
-.envelope-wrapper .letter {
-    height: 160px;
-    bottom: 10px;
-    transform: translateY(0);
-}
-
 /* Open state - letter extends outward */
-.envelope-wrapper:hover .envelope::before {
+.envelope-wrapper.open .envelope::before {
     transform: rotateX(180deg);
     z-index: 0;
 }
 
-.envelope-wrapper:hover .letter {
+.envelope-wrapper.open .letter {
     transform: translateY(-180px);
     transition-delay: 0.5s;
-    height: 200px;
-    bottom: 10px;
+    height: 220px;
 }
 
-.envelope-wrapper:hover .heart {
+.envelope-wrapper.open .heart {
     transform: translate(-50%, -200%) rotate(45deg);
     opacity: 0;
 }
 
 .instructions {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     color: white;
     text-align: center;
     width: 100%;
-    font-size: 14px;
+    font-size: 16px;
+    padding: 0 20px;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 480px) {
+    .envelope-wrapper {
+        padding: 15px;
+    }
+    
+    .envelope {
+        height: 180px;
+    }
+    
+    .envelope::before {
+        border-top: 100px solid var(--envelope-tab);
+    }
+    
+    .letter {
+        height: 140px;
+        padding: 12px;
+    }
+    
+    .letter-content {
+        font-size: 13px;
+    }
+    
+    .birthday-image {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .envelope-wrapper.open .letter {
+        transform: translateY(-160px);
+        height: 200px;
+    }
+    
+    .instructions {
+        font-size: 14px;
+        bottom: 15px;
+    }
+}
+
+/* Custom scrollbar */
+.letter::-webkit-scrollbar {
+    width: 6px;
+}
+
+.letter::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.letter::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.letter::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.message-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.message {
+    background: #f9f9f9;
+    padding: 8px;
+    border-radius: 6px;
+    border-left: 3px solid var(--heart-color);
+    font-size: 12px;
+}
+
+/* Touch feedback */
+.envelope-wrapper:active {
+    transform: scale(0.98);
+    transition: transform 0.1s;
+}
+
+/* Prevent text selection */
+.no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 </style>
 </head>
 
 <body>
 <div class="container">
-    <div class="envelope-wrapper">
+    <div class="envelope-wrapper no-select">
         <div class="envelope">
             <div class="letter">
-                <div class="text">
+                <div class="letter-content">
                     <strong>Dear My Baby</strong>
-                    <p>I just want to say happy birthday to the girl I love the most,
-                       thank you for accepting me despite my flaws,
-                       you are so beautiful and cute heheh. 
-                        salamat nakilala kita cuz id dont really know how my life been if di tayo nagkakilala 
-                        also thankful kao kay God cuz he gave me a pretty and cute wifeyy.
-                        also di ako makapaniwala na im ur type im like "Lord,sesyos ba toh "
-                        HAHAHAAHAHAH dami kong tanong abt it,i gave this gift to you cuz i know u deserve all of
-                        this and laso mag pray ako kay papa God para iw wont do mistakes u dont like.also sana more 
-                        years for us to make us husband and wife soon,i know it sound too early 
-                        for this but now palang iwant to 
-                        be with you eternally like "Lord sakin nalan si kaee,iingatan ko sya" ill always
-                        compliment ur cuteness ang ganda moo my baby lovee
-                        
-                        God bless you po baby kong cute pretty and kind also ur family and friends who supported u nung wala pako sa life moo.
-                        mwamwamwamwamwamw
-                        amwamwamwamwamwamwaa
-                       I love you, enjoy your day!
-                        <img src="loveyy.jpg" width="100px" height="100px">
-                    </p>
+                    <p>Happy Birthday to the most beautiful girl in my life! 🎉🎂</p>
                     
+                
+                    <div style="text-align: center; margin: 10px 0;">
+                        <img src="loveyy.jpg" alt="">
+                    </div>
+                    
+                    <div class="message-container">
+                        <div class="message">
+                            <strong>Message 1:</strong>
+                            <p>Thank you for accepting me despite my flaws. You are so beautiful and cute! 😊</p>
+                        </div>
+                        
+                        <div class="message">
+                            <strong>Message 2:</strong>
+                            <p>Salamat nakilala kita! I don't know how my life would be if we never met. ❤️</p>
+                        </div>
+                    </div>
+                    
+                    <p style="text-align: center; margin-top: 10px; font-weight: bold;">
+                        I love you so much! Enjoy your special day! 💕
+                    </p>
                 </div>
             </div>
         </div>
         <div class="heart"></div>
     </div>
-    <div class="instructions">Hover over the envelope to open it</div>
+    <div class="instructions">Tap the envelope to open it</div>
 </div>
 
 <script>
-// Optional: Add click functionality as alternative to hovering
-document.querySelector('.envelope-wrapper').addEventListener('click', function() {
+// Mobile-friendly functionality
+const envelopeWrapper = document.querySelector('.envelope-wrapper');
+const instructions = document.querySelector('.instructions');
+
+// Toggle envelope on click/tap
+envelopeWrapper.addEventListener('click', function() {
     this.classList.toggle('open');
+    
+    // Update instructions
+    if (this.classList.contains('open')) {
+        instructions.textContent = 'Tap again to close';
+    } else {
+        instructions.textContent = 'Tap the envelope to open it';
+    }
+});
+
+// Close envelope when clicking outside (optional)
+document.addEventListener('click', function(event) {
+    if (!envelopeWrapper.contains(event.target) && envelopeWrapper.classList.contains('open')) {
+        envelopeWrapper.classList.remove('open');
+        instructions.textContent = 'Tap the envelope to open it';
+    }
+});
+
+// Prevent double-tap zoom on mobile
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function (event) {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+    }
+    lastTouchEnd = now;
+}, false);
+
+// Add touch feedback
+envelopeWrapper.addEventListener('touchstart', function() {
+    this.style.transform = 'scale(0.98)';
+});
+
+envelopeWrapper.addEventListener('touchend', function() {
+    this.style.transform = 'scale(1)';
 });
 </script>
 
 </body>
-
 </html>
-
 
